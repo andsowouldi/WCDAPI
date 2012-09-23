@@ -4,7 +4,7 @@ $url = "https://what.cd/login.php"
 
 $CookieContainer = New-Object System.Net.CookieContainer
 
-$postData = "username=andsowouldi&password=[Your Password]"
+$postData = "username=[Your Username]&password=[Your Password]"
 
 $buffer = [text.encoding]::ascii.getbytes($postData)
 
