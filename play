@@ -1,0 +1,40 @@
+public static void play(Context context, int resId) {
+          try {
+	        	// TODO: welp... is this is really the best way to enforce sequential playback
+	        	// on a singleton MediaPlayer? it may be...
+	        	while(mp.isPlaying()) {
+	        		Thread.sleep(5);
+	        	}
+	        	
+	        	final AudioManager manager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+	        	final int volume = manager.getStreamVolume(AudioManager.STREAM_MUSIC);
+	        	// TODO: this is lazy... if STREAM_MUSIC is silent, we just blast it at max?? ok...
+	        	if(volume == 0) {
+	        		manager.setStreamVolume(
+	        			AudioManager.STREAM_MUSIC,
+	        			manager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
+	        			0);
+	        	}
+	        	
+	            mp.reset();
+	            mp.setDataSource(context, Uri.parse("android.resource://" + "com.onomato.android" + "/" + resId));
+	            mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+	            mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+	                @Override
+	                public void onCompletion(MediaPlayer mp) {
+	                    mp.stop();
+	                    mp.release();
+	    	            manager.setStreamVolume(
+	    	        			AudioManager.STREAM_MUSIC,
+	    	        			volume,
+	    	        			0);
+	                }
+	            });
+	            mp.prepare();
+	            mp.start();
+	        } catch (IOException e) {
+	            Log.e("com.onomato.android", "Error playing audio resource", e);
+	        } catch (InterruptedException e) {
+	            Log.e("com.onomato.android", "Error playing audio resource", e);
+			}
+	    }
